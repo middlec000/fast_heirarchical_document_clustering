@@ -62,6 +62,7 @@ def preprocess(docs: dict, min_frequency: int=2):
             del vocabulary.id_word[word_id_to_drop]
             del vocabulary.word_id[word_to_drop]
 
+    '''
     # Remove these Words from the Corpus and Calculate TF-IDF Scores
     for doc in docs:
         tfidf_doc = {}
@@ -70,6 +71,15 @@ def preprocess(docs: dict, min_frequency: int=2):
                 word_id = vocabulary.word_id[word]
                 tfidf_doc[word_id] = docs[doc][word] / vocabulary.id_count[word_id]
         docs[doc] = Doc(doc_id=doc, contents=tfidf_doc)
+    '''
+    # Remove these Words from the Corpus + Change Words to Word_IDs
+    for doc in docs:
+        new_doc = {}
+        for word in docs[doc]:
+            if word in vocabulary.word_id.keys():
+                word_id = vocabulary.word_id[word]
+                new_doc[word_id] = docs[doc][word]
+        docs[doc] = Doc(doc_id=doc, contents=new_doc)
 
     corpus = Corpus(docs)
 

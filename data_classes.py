@@ -1,14 +1,13 @@
 from dataclasses import dataclass
-from typing import List, Dict
+from typing import List, Dict, Set, Tuple
 
-from new_code.preprocessing import preprocess
-
-num_items_to_print = 5
+num_items_to_print = 10
 
 @dataclass
 class Doc:
     doc_id: int
-    contents: Dict[int, float] # {word_id: TF-IDF}
+    # contents: Dict[int, float] # {word_id: TF-IDF}
+    contents: Dict[int, int] # {word_id: frequency}
 
     def __str__(self):
         keys = list(self.contents.keys())[:num_items_to_print]
@@ -46,11 +45,25 @@ class Vocabulary:
         return vocab_string
     # TODO: add methods for adding, removing words
 
-@dataclass
 class Cluster:
     cluster_id: int
-    docs: Dict[int, Doc] # {doc_id, Doc}
+    docs: List[int] # doc_ids
+    contents: Dict[int, int] # {word_id: frequency}
+    norm: float
     theme: List[str]
+
+    def norm(self) -> float:
+        # L2 Euclidean Norm
+        # https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
+        return sum(self.contents[word] ** 2 for word in self.contents.keys()) ** (1/2)
+    
+    def __init__(self, cluster_id: int, docs: List[int], contents: Dict[int, int]):
+        self.cluster_id = cluster_id
+        self.docs = docs
+        self.contents = contents
+        self.norm = self.norm()
+        self.theme = None # TODO: add
+        return
 
     def __str__(self):
         cluster_string = f"Cluster ID: {self.cluster_id}\nFirst {num_items_to_print-1} Documents: {list(self.docs.keys())[:num_items_to_print]}...\nTheme: {self.theme[num_items_to_print]}..."
@@ -65,4 +78,8 @@ class Level:
     def __str__(self):
         level_string = f"Level: {self.level_id}\nNumber of Clusters: {self.num_clusters}"
         return level_string
+
+@dataclass
+class Similarity_Matrix:
+    similarities: Dict[Tuple[int, int], float] # {(cluster_a_id, cluster_b_id): similarity}
 
