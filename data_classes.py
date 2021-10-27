@@ -55,7 +55,7 @@ class Cluster:
     def norm(self) -> float:
         # L2 Euclidean Norm
         # https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
-        return sum(self.contents[word] ** 2 for word in self.contents.keys()) ** (1/2)
+        return sum([self.contents[word_id] ** 2 for word_id in self.contents]) ** (1/2)
     
     def __init__(self, cluster_id: int, docs: List[int], contents: Dict[int, int]):
         self.cluster_id = cluster_id
