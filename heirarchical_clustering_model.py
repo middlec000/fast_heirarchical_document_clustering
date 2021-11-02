@@ -15,6 +15,10 @@ class HeirarchicalClusteringModel():
         self.vocabulary = vocabulary
         self.levels = None
         return
+
+    def __str__(self):
+        heirarchicalclusteringmodel_string = f"Levels: {self.levels}...\n"
+        return heirarchicalclusteringmodel_string
     
     def cluster(self, cluster_type:str='agglomerative'):
         if cluster_type == 'agglomerative':

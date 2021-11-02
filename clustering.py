@@ -8,6 +8,9 @@ from data_classes import \
     Cluster
 
 def similarity(a: Cluster, b: Cluster, vocabulary: Vocabulary) -> float:
+    """
+    Computes and returns TF-IDF similarity between two clusters.
+    """
     similarity = 0
     for word_id in a.contents:
         if word_id in b.contents:
@@ -26,12 +29,19 @@ def similarity(a: Cluster, b: Cluster, vocabulary: Vocabulary) -> float:
         return similarity / (a.norm * b.norm)
 
 def get_similarity_matrix(level: Level, vocabulary: Vocabulary) -> Similarity_Matrix:
+    '''
+    Creates a similarity matrix for the entire level.
+    Made to be updatable.
+
+    The similarities are stored as:
+    {frozenset(cluster_a_id, cluster_b_id): similarity}
+    '''
     similarity_matrix = Similarity_Matrix(similarities={})
     for a in range(len(level.clusters)):
-        cluster_a_id = level.clusters.keys()[a]
+        cluster_a_id = list(level.clusters.keys())[a]
         for b in range(a+1, len(level.clusters)):
-            cluster_b_id = level.clusters.keys()[b]
-            similarity_matrix[tuple(cluster_a_id, cluster_b_id)] = similarity(a=level.clusters[cluster_a_id], b=level.clusters[cluster_b_id], vocabulary=vocabulary)
+            cluster_b_id = list(level.clusters.keys())[b]
+            similarity_matrix.similarities[frozenset({cluster_a_id, cluster_b_id})] = similarity(a=level.clusters[cluster_a_id], b=level.clusters[cluster_b_id], vocabulary=vocabulary)
     return similarity_matrix
 
 def agglomerative_cluster(corpus: Corpus, vocabulary: Vocabulary) -> Dict[int, Level]:
@@ -41,7 +51,7 @@ def agglomerative_cluster(corpus: Corpus, vocabulary: Vocabulary) -> Dict[int, L
     current_level = Level(level_id=0, clusters={}, num_clusters=0)
     for doc_id in corpus.docs:
         # Create initial Clusters - each Doc is a Cluster
-        current_level.clusters[cluster_id] = Cluster(cluster_id=cluster_id, docs=[doc_id], contents=corpus.docs[doc_id])
+        current_level.clusters[cluster_id] = Cluster(cluster_id=cluster_id, docs=[doc_id], contents=corpus.docs[doc_id].contents)
         current_level.num_clusters += 1
         cluster_id += 1
     levels[current_level.level_id] = copy(current_level)
@@ -54,7 +64,7 @@ def agglomerative_cluster(corpus: Corpus, vocabulary: Vocabulary) -> Dict[int, L
 
         # Find most similar clusters to combine
         similarity_matrix = get_similarity_matrix(level=current_level, vocabulary=vocabulary)
-        cluster_a_id, cluster_b_id = max(similarity_matrix, key=similarity_matrix.get)
+        cluster_a_id, cluster_b_id = max(similarity_matrix.similarities, key=similarity_matrix.similarities.get)
         a_cluster = current_level.clusters[cluster_a_id]
         b_cluster = current_level.clusters[cluster_b_id]
 

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Dict, Set, Tuple
+from typing import List, Dict, Set, Tuple, FrozenSet
 
 num_items_to_print = 10
 
@@ -81,5 +81,5 @@ class Level:
 
 @dataclass
 class Similarity_Matrix:
-    similarities: Dict[Tuple[int, int], float] # {(cluster_a_id, cluster_b_id): similarity}
+    similarities: Dict[FrozenSet[int], float] # {(cluster_a_id, cluster_b_id): similarity}
 

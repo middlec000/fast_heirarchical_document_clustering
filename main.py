@@ -1,9 +1,7 @@
 from preprocessing import preprocess
 from heirarchical_clustering_model import HeirarchicalClusteringModel
 
-
-if __name__ == '__main__':
-
+def main():
     docs = {
         0: 'Hello my name is Colin. Did I tell you my name?', 
         2:"I'm fun and    cool, hello!", 
@@ -13,8 +11,6 @@ if __name__ == '__main__':
     }
 
     corpus, vocabulary = preprocess(docs, min_frequency=2)
-
-    model = HeirarchicalClusteringModel(corpus=corpus, vocabulary=vocabulary)
 
     print()
     print('Corpus')
@@ -26,5 +22,13 @@ if __name__ == '__main__':
     print(vocabulary)
     print()
 
+    model = HeirarchicalClusteringModel(corpus=corpus, vocabulary=vocabulary)
+
     model.cluster()
 
+    print(model.levels)
+
+    return
+
+if __name__ == '__main__':
+    main()
