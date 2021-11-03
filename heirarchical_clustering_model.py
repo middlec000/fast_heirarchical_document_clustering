@@ -5,6 +5,8 @@ from data_classes import \
     Level
 from clustering import agglomerative_cluster
 
+num_items_to_print = 10
+
 class HeirarchicalClusteringModel():
     vocabulary: Vocabulary
     corpus: Corpus
@@ -17,7 +19,11 @@ class HeirarchicalClusteringModel():
         return
 
     def __str__(self):
-        heirarchicalclusteringmodel_string = f"Levels: {self.levels}...\n"
+        heirarchicalclusteringmodel_string = f"Levels:\n"
+        for i in range(num_items_to_print):
+            if i in self.levels:
+                heirarchicalclusteringmodel_string += str(self.levels[i])
+        heirarchicalclusteringmodel_string += '...\n'
         return heirarchicalclusteringmodel_string
     
     def cluster(self, cluster_type:str='agglomerative'):

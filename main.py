@@ -3,12 +3,19 @@ from heirarchical_clustering_model import HeirarchicalClusteringModel
 
 def main():
     docs = {
+        0: "one one one two",
+        1: "one one one three",
+        2: "two two three three"
+    }
+    """
+    docs = {
         0: 'Hello my name is Colin. Did I tell you my name?', 
         2:"I'm fun and    cool, hello!", 
         7:'Just a normal 98-year old! 700ppm. Normal Normal... and old.', 
         8:'What is a name? Years of old old sounds and repeated symbols...',
         3:'I I I have repeated repeated my90 self my..'
     }
+    """
 
     corpus, vocabulary = preprocess(docs, min_frequency=2)
 
@@ -26,8 +33,12 @@ def main():
 
     model.cluster()
 
-    print(model.levels)
+    print('Model')
+    print(model)
 
+    level = 0
+    cluster = 0
+    print(model.levels[level].clusters[cluster].contents)
     return
 
 if __name__ == '__main__':

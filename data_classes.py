@@ -76,7 +76,7 @@ class Level:
     num_clusters: int
 
     def __str__(self):
-        level_string = f"Level: {self.level_id}\nNumber of Clusters: {self.num_clusters}"
+        level_string = f"Level: {self.level_id}\nNumber of Clusters: {self.num_clusters}\nClusters: {list(self.clusters.keys())[:num_items_to_print]}...\n"
         return level_string
 
 @dataclass

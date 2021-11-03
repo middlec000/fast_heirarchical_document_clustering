@@ -1,5 +1,5 @@
 from typing import Dict
-from copy import copy
+from copy import deepcopy
 from data_classes import \
     Corpus, \
     Vocabulary, \
@@ -50,11 +50,11 @@ def agglomerative_cluster(corpus: Corpus, vocabulary: Vocabulary) -> Dict[int, L
     # Create initial Level
     current_level = Level(level_id=0, clusters={}, num_clusters=0)
     for doc_id in corpus.docs:
-        # Create initial Clusters - each Doc is a Cluster
+        # Create initial Clusters - each Doc becomes a Cluster
         current_level.clusters[cluster_id] = Cluster(cluster_id=cluster_id, docs=[doc_id], contents=corpus.docs[doc_id].contents)
-        current_level.num_clusters += 1
         cluster_id += 1
-    levels[current_level.level_id] = copy(current_level)
+    current_level.num_clusters = len(current_level.clusters)
+    levels[current_level.level_id] = deepcopy(current_level)
 
     # Loop agglomerating clusters until there is only one cluster in current_level
     while current_level.num_clusters > 1:
@@ -84,10 +84,10 @@ def agglomerative_cluster(corpus: Corpus, vocabulary: Vocabulary) -> Dict[int, L
         del current_level.clusters[cluster_a_id]
         del current_level.clusters[cluster_b_id]
 
-        # Decriment number of Clusters
-        current_level.num_clusters -= 1
+        # Adjust (decrement) number of Clusters
+        current_level.num_clusters = len(current_level.clusters)
 
         # Add current_level to levels
-        levels[current_level.level_id] = copy(current_level)
+        levels[current_level.level_id] = deepcopy(current_level)
 
     return levels
