@@ -33,13 +33,15 @@ def main():
 
     model.cluster()
 
-    print('Model')
-    print(model)
+    print('General')
+    print(model.get_results())
+    
+    verbosity = 1
+    #print(f'w/ verbosity = {verbosity}')
+    #print(model.get_results(clusters=[3], verbosity=verbosity))
 
-    level = 0
-    cluster = 0
-    print(model.levels[level].clusters[cluster].contents)
+    #print(model.measure_matrix)
     return
-
+ 
 if __name__ == '__main__':
     main()
