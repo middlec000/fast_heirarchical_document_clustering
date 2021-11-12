@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 # showing info https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml
 import re
 import string
-from data_classes import Vocabulary, Doc, Corpus
+from data_classes import Vocabulary, Corpus, Cluster
 
 def preprocess(docs: dict, min_frequency: int=2):
     stop_words = set(stopwords.words('english'))
@@ -51,7 +51,7 @@ def preprocess(docs: dict, min_frequency: int=2):
 
     # Find Corpus Wide Low-Frequency Words
     word_ids_to_drop = []
-    for word_id in vocabulary.id_count.keys():
+    for word_id in vocabulary.id_count:
         if vocabulary.id_count[word_id] < min_frequency:
             word_ids_to_drop.append(word_id)
 
@@ -62,24 +62,20 @@ def preprocess(docs: dict, min_frequency: int=2):
             del vocabulary.id_word[word_id_to_drop]
             del vocabulary.word_id[word_to_drop]
 
-    '''
-    # Remove these Words from the Corpus and Calculate TF-IDF Scores
+    # Remove these Words from the Corpus
+    # Change Words to Word_IDs
+    # Record TFIDF scores
+    # Create Clusters
+    cluster_id = 0
     for doc in docs:
-        tfidf_doc = {}
+        cluster_contents = {}
         for word in docs[doc]:
-            if word in vocabulary.word_id.keys():
+            if word in vocabulary.word_id:
                 word_id = vocabulary.word_id[word]
-                tfidf_doc[word_id] = docs[doc][word] / vocabulary.id_count[word_id]
-        docs[doc] = Doc(doc_id=doc, contents=tfidf_doc)
-    '''
-    # Remove these Words from the Corpus + Change Words to Word_IDs
-    for doc in docs:
-        new_doc = {}
-        for word in docs[doc]:
-            if word in vocabulary.word_id.keys():
-                word_id = vocabulary.word_id[word]
-                new_doc[word_id] = docs[doc][word]
-        docs[doc] = Doc(doc_id=doc, contents=new_doc)
+                word_tfidf = float(docs[doc][word]) / float(vocabulary.id_count[word_id])
+                cluster_contents[word_id] = word_tfidf
+        docs[doc] = Cluster(cluster_id=cluster_id, docs=[doc], contents=cluster_contents)
+        cluster_id += 1
 
     corpus = Corpus(docs)
 

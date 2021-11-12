@@ -30,7 +30,7 @@ class HeirarchicalClusteringModel():
     
     def cluster(self, cluster_type: str='agglomerative')-> None:
         if cluster_type == 'agglomerative':
-            self.levels, self.measure_matrix = agglomerative_cluster(self.corpus, self.vocabulary)
+            self.levels, self.measure_matrix = agglomerative_cluster(self.corpus)
         else:
             print('Clustering type not supported.\n')
         return

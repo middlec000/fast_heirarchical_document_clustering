@@ -3,21 +3,14 @@ from copy import deepcopy
 from data_classes import \
     Corpus, \
     Distance_Matrix, \
-    Vocabulary, \
-    Level, \
-    Cluster
+    Level
 
-def agglomerative_cluster(corpus: Corpus, vocabulary: Vocabulary) -> Dict[int, Level]:
+def agglomerative_cluster(corpus: Corpus) -> Dict[int, Level]:
     levels = {}
-    cluster_id = -1
     # Create initial Level
-    current_level = Level(level_id=0, clusters={}, num_clusters=0)
-    for doc_id in corpus.docs:
-        # Incremend cluster ID
-        cluster_id += 1
-        # Create initial Clusters - each Doc becomes a Cluster
-        current_level.clusters[cluster_id] = Cluster(cluster_id=cluster_id, docs=[doc_id], word_frequencies=corpus.docs[doc_id].contents, vocabulary=vocabulary)
-    current_level.num_clusters = len(current_level.clusters)
+    current_level = Level(level_id=0, clusters=corpus.docs)
+    cluster_id = max(current_level.clusters.keys())
+
     levels[current_level.level_id] = deepcopy(current_level)
 
     # Compute distance matrix
@@ -37,7 +30,7 @@ def agglomerative_cluster(corpus: Corpus, vocabulary: Vocabulary) -> Dict[int, L
         b_cluster = current_level.clusters[cluster_b_id]
 
         # Create new cluster and add it to the level's clusters
-        current_level.clusters[cluster_id] = a_cluster.merge(another=b_cluster, cluster_id=cluster_id, vocabulary=vocabulary)
+        current_level.clusters[cluster_id] = a_cluster.merge(another=b_cluster, new_cluster_id=cluster_id)
 
         # Remove merged Clusters
         # ...from Level
