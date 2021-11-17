@@ -1,27 +1,12 @@
+from numpy import array, zeros
 from dataclasses import dataclass
-import numpy
-from copy import deepcopy
 from typing import List, Dict, FrozenSet
 
 NUMBER_ITEMS_TO_PRINT = 10
 
-'''
-@dataclass
-class Doc:
-    doc_id: int
-    # contents: Dict[int, float] # {word_id: TF-IDF}
-    contents: Dict[int, int] # {word_id: frequency}
-
-    def __str__(self):
-        keys = list(self.contents.keys())[:NUMBER_ITEMS_TO_PRINT]
-        values = list(self.contents.values())[:NUMBER_ITEMS_TO_PRINT]
-        doc_string = f"Doc ID: {self.doc_id}\nContents: {dict(zip(keys, values))}..."
-        return doc_string
-'''
-
 @dataclass
 class Corpus:
-    docs: Dict[int, "Cluster"] # {cluster_id: Doc}
+    docs: Dict[int, "Cluster"] # {cluster_id: document}
 
     def __str__(self):
         corpus_string = f"First {NUMBER_ITEMS_TO_PRINT} Documents: {list(self.docs)[:NUMBER_ITEMS_TO_PRINT]}..."
@@ -47,7 +32,6 @@ class Vocabulary:
         values = list(self.id_count.values())[:NUMBER_ITEMS_TO_PRINT]
         vocab_string += f"\nID to Count: {dict(zip(keys, values))}..."
         return vocab_string
-    # TODO: add methods for adding, removing words
 
 class Cluster:
     cluster_id: int
@@ -57,17 +41,13 @@ class Cluster:
     theme: List[str]
 
     def norm(self) -> float:
-        # L2 Euclidean Norm
-        # https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
+        """Computes L2 (Euclidean) norm for a cluster. See more at:
+        https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
+
+        Returns:
+            float: The L2 norm of the cluster.
+        """
         return sum([self.contents[word_id] ** 2 for word_id in self.contents]) ** (1/2)
-    
-    '''
-    def word_frequencies_to_tfidf(self, word_frequencies: Dict[int, int], vocabulary: Vocabulary) -> Dict[int, float]:
-        word_id_tfidf = {}
-        for word_id in word_frequencies:
-            word_id_tfidf[word_id] = float(word_frequencies[word_id]) / float(vocabulary.id_count[word_id])
-        return word_id_tfidf
-    '''
     
     def __init__(self, cluster_id: int, docs: List[int], contents: Dict[int, float]):
         self.cluster_id = cluster_id
@@ -136,8 +116,14 @@ class Distance_Matrix:
     distances: Dict[FrozenSet[int], float] # {(cluster_a_id, cluster_b_id): distance}
 
     def distance(self, a: Cluster, b: Cluster) -> float:
-        """
-        Computes and returns TF-IDF distance between two clusters.
+        """Computes and returns dot product distance based on TF-IDF scores between two clusters.
+
+        Args:
+            a (Cluster): The first cluster to compute distance from.
+            b (Cluster): The second cluster to compute distance to.
+
+        Returns:
+            float: Distance between clusters a and b.
         """
         similarity = 0
         for word_id in a.contents:
@@ -156,10 +142,13 @@ class Distance_Matrix:
     def __init__(self, level: Level):
         '''
         Creates a distance matrix for the entire level.
-        Made to be updatable.
+        Distances are stored in a dictionary to be quickly updatable.
 
         The distances are stored as:
         {frozenset(cluster_a_id, cluster_b_id): distance}
+
+        Args:
+            level (Level): The level over which to compute distances.
         '''
         self.distances = {}
         for a in range(len(level.clusters)):
@@ -173,13 +162,36 @@ class Distance_Matrix:
         return str(self.distances)
     
     def remove_cluster(self, cluster_to_remove: int) -> None:
+        """Efficiently removes specified cluster from DistanceMatrix.
+
+        Args:
+            cluster_to_remove (int): The id of the cluser to remove.
+        """
         self.distances = {key:self.distances[key] for key in self.distances if cluster_to_remove not in key}
         return
     
     def add_cluster(self, new_cluster_id: int, current_level: Level) -> None:
+        """Efficiently add new cluster to DistanceMatrix.
+
+        Args:
+            new_cluster_id (int): The id of the new cluster.
+            current_level (Level): The current level with all it's clusters.
+        """
         other_cluster_ids = list(current_level.clusters.keys())
         other_cluster_ids.remove(new_cluster_id)
         for other_cluster_id in other_cluster_ids:
             self.distances[frozenset({new_cluster_id, other_cluster_id})] = self.distance(a=current_level.clusters[new_cluster_id], b=current_level.clusters[other_cluster_id])
         return
+
+    def to_numpy(self) -> array:
+        """Return a numpy array with all the distances in DistanceMatrix.
+
+        Returns:
+            array: Distance matrix.
+        """
+        numpy_arr = zeros(shape=(len(self.distances), len(self.distances)))
+        for ids in self.distances:
+            numpy_arr[ids[0], ids[1]] = self.distance[ids]
+            numpy_arr[ids[1], ids[0]] = self.distance[ids]
+        return numpy_arr
 

@@ -5,7 +5,21 @@ from data_classes import \
     Distance_Matrix, \
     Level
 
-def agglomerative_cluster(corpus: Corpus) -> Dict[int, Level]:
+def agglomerative_cluster(corpus: Corpus, stop_num_clusters: int=None) -> Dict[int, Level]:
+    """Clusters the given documents, or corpus, using an efficient form of dot product distance (see DistanceMatrix.distance()) in an agglomerative manner. This means that initially each document is a cluster (see Cluster) and at every round of clustering the two clusters with smallest distance are combined. This process is repeated until either there is one cluster remaining or there are stop_num_clusters clusters remaining.
+
+    Args:
+        corpus (Corpus): Collection of documents to cluster.
+
+        stop_num_clusters (int, optional): Optional argument to stop clustering early when the number of clusters reaches the passed value.
+
+    Returns:
+        Dict[int, Level]: Dictionary representing the clustering history as a series of levels (see Level), each containing the clusters at that level.
+    """
+
+    if stop_num_clusters is None:
+        stop_num_clusters = 1
+
     levels = {}
     # Create initial Level
     current_level = Level(level_id=0, clusters=corpus.docs)
@@ -15,14 +29,14 @@ def agglomerative_cluster(corpus: Corpus) -> Dict[int, Level]:
 
     # Compute distance matrix
     distance_matrix = Distance_Matrix(level=current_level)
+    initial_distance_matrix = distance_matrix.to_numpy()
 
-    # Loop agglomerating clusters until there is only one cluster in current_level
-    while current_level.num_clusters > 1:
+    # Loop agglomerating clusters until the number of clusters in current_level reaches stop_num_clusters
+    while current_level.num_clusters > stop_num_clusters:
         # Incriment IDs for new objects
         current_level.level_id += 1
         cluster_id += 1
 
-        print(distance_matrix)
         # Find least different clusters to combine
         cluster_a_id, cluster_b_id = min(distance_matrix.distances, key=distance_matrix.distances.get)
 
@@ -50,5 +64,5 @@ def agglomerative_cluster(corpus: Corpus) -> Dict[int, Level]:
         levels[current_level.level_id] = deepcopy(current_level)
 
     # return levels, distance_matrix
-    return levels, distance_matrix
+    return levels, initial_distance_matrix
 

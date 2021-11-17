@@ -1,5 +1,5 @@
-from preprocessing import preprocess
-from heirarchical_clustering_model import HeirarchicalClusteringModel
+from src.fhdc.preprocessing import preprocess
+from src.fhdc.fhdc_model import HeirarchicalClusteringModel
 
 def main():
     docs = {
