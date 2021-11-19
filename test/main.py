@@ -29,7 +29,7 @@ def main():
     print(corpus)
     document = 0
     print(f'Document {document}')
-    print(corpus.docs[document])
+    print(corpus.docs[document].__str__(vocabulary=vocabulary))
     print('Vocabulary')
     print(vocabulary)
     print()
@@ -37,14 +37,14 @@ def main():
     model.cluster()
 
     print('Clustering Summary')
-    print(model.summary())
+    print('Verbosity = 0')
+    print(model.summary(verbosity=0))
+    print('Verbosity = 1')
+    print(model.summary(verbosity=1))
+    print('Verbosity = 2')
+    print(model.summary(verbosity=2))
     
-    verbosity = 1
-    #print(f'w/ verbosity = {verbosity}')
-    #print(model.get_results(clusters=[3], verbosity=verbosity))
-
-    #print(model.measure_matrix)
     return
- 
+
 if __name__ == '__main__':
     main()

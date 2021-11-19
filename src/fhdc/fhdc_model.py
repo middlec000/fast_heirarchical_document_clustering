@@ -25,7 +25,7 @@ class FHDC_Model():
         s = f"Levels:\n"
         for i in range(num_items_to_print):
             if i in self.levels:
-                s += self.levels[i].__str__(verbosity=verbosity)
+                s += self.levels[i].__str__(vocabulary=self.vocabulary, verbosity=verbosity)
         s += '...\n'
         return s
     
@@ -109,10 +109,11 @@ class FHDC_Model():
         else:
             if not (levels is None):
                 for level in levels:
-                    cumulative_string += self.levels[level].__str__(verbosity=verbosity)
+                    cumulative_string += self.levels[level].__str__(vocabulary=self.vocabulary, verbosity=verbosity)
             elif not (clusters is None):
                 for cluster_id in clusters:
-                    cumulative_string += self.get_cluster(cluster_id=cluster_id).__str__(verbosity=verbosity)
+                    cumulative_string += self.get_cluster(cluster_id=cluster_id).__str__(vocabulary=self.vocabulary, verbosity=verbosity)
         return cumulative_string
         #TODO: add print to file
+        #TODO: create a summary object?
 

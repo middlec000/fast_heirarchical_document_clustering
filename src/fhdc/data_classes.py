@@ -57,16 +57,17 @@ class Cluster:
         self.theme = []
         return
 
-    def __str__(self, verbosity: int=0):
-        self.compute_theme()
+    def __str__(self, vocabulary: Vocabulary, verbosity: int=0):
+        self.compute_theme(vocabulary=vocabulary)
         cluster_string = f"Cluster ID: {self.cluster_id}\n"
         if verbosity == 0:
             cluster_string += f"First {NUMBER_ITEMS_TO_PRINT-1} Documents: {self.docs[:NUMBER_ITEMS_TO_PRINT]}...\nTheme: {self.theme[:NUMBER_ITEMS_TO_PRINT]}...\n"
         elif verbosity == 1:
             cluster_string += f"Documents: {self.docs}\nTheme: {self.theme}\n"
         else:
-            cluster_string = "Verbosity level not recognized, please choose a supported verbosity level.\n"
-        return cluster_string
+            print("Verbosity level not recognized, please choose a supported verbosity level.")
+            return
+        return cluster_string + "\n"
     
     def merge(self, another: "Cluster", new_cluster_id: int) -> "Cluster":
         """Merges the current cluster with 'another' and returns the resulting cluster.
@@ -89,14 +90,25 @@ class Cluster:
         # Return new Cluster
         return Cluster(cluster_id=new_cluster_id, docs=new_cluster_docs, contents=new_cluster_contents)
     
-    def compute_theme(self, vocabulary: Vocabulary, num_to_take: int=NUMBER_ITEMS_TO_PRINT) -> None:
-        # TODO: update
+    def compute_theme(self, vocabulary: Vocabulary, verbosity: int=0) -> None:
+        """Sorts the Cluster contents by TF-IDF score and saves the resulting string as a list of strings in Cluster.theme.
+
+        Args:
+            vocabulary (Vocabulary): Vocabulary for the corpus. Needed to translate word ids back into string words.
+            verbosity (int, optional): Controls how many theme words to save. Defaults to 0.
+        """
+        num_to_take = 0
+        if verbosity == 0:
+            num_to_take = NUMBER_ITEMS_TO_PRINT
+        elif verbosity == 1:
+            num_to_take = len(self.contents)
+        else:
+            print('Verbosity level not supported.')
+            return
         sorted_by_tfidf = {vocabulary.id_word[k]: v for k, v in sorted(self.contents.items(), key=lambda item: item[1])}
         theme_words = list(sorted_by_tfidf.keys())[:num_to_take]
-        cluster_theme = []
         for theme_word in theme_words:
-            cluster_theme += f'{theme_word}: {sorted_by_tfidf[theme_word]}'
-        self.theme = cluster_theme
+            self.theme.append(f'{theme_word}: {round(sorted_by_tfidf[theme_word], 2)}')
         return
 
 class Level:
@@ -109,15 +121,16 @@ class Level:
         self.clusters = clusters
         self.num_clusters = len(clusters)
 
-    def __str__(self, verbosity: int=0):
+    def __str__(self, vocabulary: Vocabulary, verbosity: int=0):
         level_string = f"Level: {self.level_id}\nNumber of Clusters: {self.num_clusters}\nClusters: "
         if verbosity == 0:
             level_string += f"{list(self.clusters.keys())[:NUMBER_ITEMS_TO_PRINT]}...\n"
         elif verbosity == 1:
             level_string += f"{list(self.clusters.keys())}\n"
         elif verbosity == 2:
+            level_string += f"{list(self.clusters.keys())}\n"
             for cluster_id in self.clusters:
-                level_string += self.clusters[cluster_id].__str__(verbosity=verbosity)
+                level_string += self.clusters[cluster_id].__str__(vocabulary=vocabulary, verbosity=1)
         else:
             return "Verbosity level not recognized, please choose a supported verbosity level.\n"
         return level_string
