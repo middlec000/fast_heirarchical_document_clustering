@@ -58,16 +58,22 @@ class Cluster:
         return
 
     def __str__(self, verbosity: int=0):
+        self.compute_theme()
         cluster_string = f"Cluster ID: {self.cluster_id}\n"
         if verbosity == 0:
             cluster_string += f"First {NUMBER_ITEMS_TO_PRINT-1} Documents: {self.docs[:NUMBER_ITEMS_TO_PRINT]}...\nTheme: {self.theme[:NUMBER_ITEMS_TO_PRINT]}...\n"
         elif verbosity == 1:
             cluster_string += f"Documents: {self.docs}\nTheme: {self.theme}\n"
         else:
-            return "Verbosity level not recognized, please choose a supported verbosity level.\n"
+            cluster_string = "Verbosity level not recognized, please choose a supported verbosity level.\n"
         return cluster_string
     
     def merge(self, another: "Cluster", new_cluster_id: int) -> "Cluster":
+        """Merges the current cluster with 'another' and returns the resulting cluster.
+
+        Returns:
+            new cluster (Cluster): New cluster that is result of merging current cluster with 'another.'
+        """
         new_cluster_docs = self.docs + another.docs
         # Child cluster contents consists of sum of tfidf scores of parent clusters
         new_cluster_contents = {}
@@ -84,6 +90,7 @@ class Cluster:
         return Cluster(cluster_id=new_cluster_id, docs=new_cluster_docs, contents=new_cluster_contents)
     
     def compute_theme(self, vocabulary: Vocabulary, num_to_take: int=NUMBER_ITEMS_TO_PRINT) -> None:
+        # TODO: update
         sorted_by_tfidf = {vocabulary.id_word[k]: v for k, v in sorted(self.contents.items(), key=lambda item: item[1])}
         theme_words = list(sorted_by_tfidf.keys())[:num_to_take]
         cluster_theme = []
@@ -108,6 +115,9 @@ class Level:
             level_string += f"{list(self.clusters.keys())[:NUMBER_ITEMS_TO_PRINT]}...\n"
         elif verbosity == 1:
             level_string += f"{list(self.clusters.keys())}\n"
+        elif verbosity == 2:
+            for cluster_id in self.clusters:
+                level_string += self.clusters[cluster_id].__str__(verbosity=verbosity)
         else:
             return "Verbosity level not recognized, please choose a supported verbosity level.\n"
         return level_string
@@ -120,6 +130,7 @@ class Distance_Matrix:
 
         Args:
             a (Cluster): The first cluster to compute distance from.
+
             b (Cluster): The second cluster to compute distance to.
 
         Returns:
@@ -175,6 +186,7 @@ class Distance_Matrix:
 
         Args:
             new_cluster_id (int): The id of the new cluster.
+
             current_level (Level): The current level with all it's clusters.
         """
         other_cluster_ids = list(current_level.clusters.keys())
@@ -187,11 +199,12 @@ class Distance_Matrix:
         """Return a numpy array with all the distances in DistanceMatrix.
 
         Returns:
-            array: Distance matrix.
+            numpy_arr (numpy.array): Distance matrix.
         """
         numpy_arr = zeros(shape=(len(self.distances), len(self.distances)))
         for ids in self.distances:
-            numpy_arr[ids[0], ids[1]] = self.distance[ids]
-            numpy_arr[ids[1], ids[0]] = self.distance[ids]
+            id1, id2 = ids
+            numpy_arr[id1, id2] = self.distances[ids]
+            numpy_arr[id2, id1] = self.distances[ids]
         return numpy_arr
 

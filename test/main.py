@@ -1,7 +1,10 @@
-from src.fhdc.preprocessing import preprocess
-from src.fhdc.fhdc_model import HeirarchicalClusteringModel
+import sys
+sys.path.insert(1, 'C:/Users/colin/Documents/GitHub/fhdc/src/fhdc')
+
+from fhdc_model import FHDC_Model
 
 def main():
+    
     docs = {
         0: "one one one two",
         1: "one one one three",
@@ -17,7 +20,9 @@ def main():
     }
     """
 
-    corpus, vocabulary = preprocess(docs, min_frequency=2)
+    model = FHDC_Model()
+
+    corpus, vocabulary = model.preprocess(docs, return_processed=True)
 
     print()
     print('Corpus')
@@ -29,12 +34,10 @@ def main():
     print(vocabulary)
     print()
 
-    model = HeirarchicalClusteringModel(corpus=corpus, vocabulary=vocabulary)
-
     model.cluster()
 
-    print('General')
-    print(model.get_results())
+    print('Clustering Summary')
+    print(model.summary())
     
     verbosity = 1
     #print(f'w/ verbosity = {verbosity}')
