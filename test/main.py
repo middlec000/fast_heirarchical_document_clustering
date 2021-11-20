@@ -6,43 +6,32 @@ from fhdc_model import FHDC_Model
 def main():
     
     docs = {
-        0: "one one one two",
-        1: "one one one three",
-        2: "two two three three"
+        "doc1": "one one one two", # one: 3, two: 1 -> one: 3
+        "doc0": "one one one three three", # one: 3, three: 2 -> one: 3, three: 2
+        "doc2": "two two three three" # two: 2, three: 2 -> two: 2, three: 2
     }
-    """
-    docs = {
-        0: 'Hello my name is Colin. Did I tell you my name?', 
-        2:"I'm fun and    cool, hello!", 
-        7:'Just a normal 98-year old! 700ppm. Normal Normal... and old.', 
-        8:'What is a name? Years of old old sounds and repeated symbols...',
-        3:'I I I have repeated repeated my90 self my..'
-    }
-    """
+    # Vocabulary: {one: 6, two: 2, three: 3}
+    # doc1 -> one: 3/6 = 0.5
+    # doc0 -> one: 3/6 = 0.5, three: 2/4 = 0.5
+    # doc2 -> two: 2/1 = 1, three: 2/4 = 0.5
 
     model = FHDC_Model()
 
-    corpus, vocabulary = model.preprocess(docs, return_processed=True)
+    corpus, vocabulary = model.preprocess(docs, doc_min_frequency=2, corpus_min_frequency=2, return_processed=True)
 
     print()
     print('Corpus')
-    print(corpus)
-    document = 0
-    print(f'Document {document}')
-    print(corpus.docs[document].__str__(vocabulary=vocabulary))
+    print(corpus.__str__(vocabulary=vocabulary, verbosity=2))
+    print()
     print('Vocabulary')
     print(vocabulary)
     print()
 
-    model.cluster()
+    #model.cluster()
 
-    print('Clustering Summary')
-    print('Verbosity = 0')
-    print(model.summary(verbosity=0))
-    print('Verbosity = 1')
-    print(model.summary(verbosity=1))
-    print('Verbosity = 2')
-    print(model.summary(verbosity=2))
+    #verbosity = 2
+    #print(f'Clustering Summary (Verbosity = {verbosity})')
+    #print(model.summary(verbosity=verbosity))
     
     return
 

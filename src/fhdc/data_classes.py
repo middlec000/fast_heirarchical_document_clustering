@@ -7,10 +7,22 @@ NUMBER_ITEMS_TO_PRINT = 10
 @dataclass
 class Corpus:
     docs: Dict[int, "Cluster"] # {cluster_id: document}
+    # TODO: track list of document names here
 
-    def __str__(self):
-        corpus_string = f"First {NUMBER_ITEMS_TO_PRINT} Documents: {list(self.docs)[:NUMBER_ITEMS_TO_PRINT]}..."
-        return corpus_string
+    def __str__(self, vocabulary: "Vocabulary"=None, verbosity: int=0):
+        s = ""
+        if verbosity == 0:
+            s = f"First {NUMBER_ITEMS_TO_PRINT} Clusters: {list(self.docs)[:NUMBER_ITEMS_TO_PRINT]}...\n"
+        elif verbosity == 1:
+            s = f"Clusters: {list(self.docs)}\n"
+        elif verbosity == 2:
+            if vocabulary is None:
+                print("Must pass vocabulary with verbosity of 2.")
+                return
+            s = f"Clusters: {list(self.docs)}\n"
+            for cluster_id in self.docs:
+                s += (self.docs[cluster_id].__str__(vocabulary=vocabulary, verbosity=verbosity))
+        return s
 
 @dataclass
 class Vocabulary:
@@ -35,7 +47,7 @@ class Vocabulary:
 
 class Cluster:
     cluster_id: int
-    docs: List[int] # doc_ids
+    docs: List[str] # doc_ids
     contents: Dict[int, float] # {word_id: TF-IDF}
     norm: float
     theme: List[str]
@@ -49,7 +61,7 @@ class Cluster:
         """
         return sum([self.contents[word_id] ** 2 for word_id in self.contents]) ** (1/2)
     
-    def __init__(self, cluster_id: int, docs: List[int], contents: Dict[int, float]):
+    def __init__(self, cluster_id: int, docs: List[str], contents: Dict[int, float]):
         self.cluster_id = cluster_id
         self.docs = docs
         self.contents = contents
@@ -57,12 +69,15 @@ class Cluster:
         self.theme = []
         return
 
-    def __str__(self, vocabulary: Vocabulary, verbosity: int=0):
-        self.compute_theme(vocabulary=vocabulary)
+    def __str__(self, vocabulary: Vocabulary=None, verbosity: int=0):
         cluster_string = f"Cluster ID: {self.cluster_id}\n"
         if verbosity == 0:
-            cluster_string += f"First {NUMBER_ITEMS_TO_PRINT-1} Documents: {self.docs[:NUMBER_ITEMS_TO_PRINT]}...\nTheme: {self.theme[:NUMBER_ITEMS_TO_PRINT]}...\n"
+            cluster_string += f"First {NUMBER_ITEMS_TO_PRINT-1} Documents: {self.docs[:NUMBER_ITEMS_TO_PRINT]}...\nContents: {self.contents}...\n"
         elif verbosity == 1:
+            self.compute_theme(vocabulary=vocabulary)
+            cluster_string += f"First {NUMBER_ITEMS_TO_PRINT-1} Documents: {self.docs[:NUMBER_ITEMS_TO_PRINT]}...\nTheme: {self.theme[:NUMBER_ITEMS_TO_PRINT]}...\n"
+        elif verbosity == 2:
+            self.compute_theme(vocabulary=vocabulary)
             cluster_string += f"Documents: {self.docs}\nTheme: {self.theme}\n"
         else:
             print("Verbosity level not recognized, please choose a supported verbosity level.")
@@ -105,7 +120,7 @@ class Cluster:
         else:
             print('Verbosity level not supported.')
             return
-        sorted_by_tfidf = {vocabulary.id_word[k]: v for k, v in sorted(self.contents.items(), key=lambda item: item[1])}
+        sorted_by_tfidf = {vocabulary.id_word[k]: v for k, v in sorted(self.contents.items(), key=lambda item: item[1], reverse=True)}
         theme_words = list(sorted_by_tfidf.keys())[:num_to_take]
         for theme_word in theme_words:
             self.theme.append(f'{theme_word}: {round(sorted_by_tfidf[theme_word], 2)}')
@@ -121,16 +136,19 @@ class Level:
         self.clusters = clusters
         self.num_clusters = len(clusters)
 
-    def __str__(self, vocabulary: Vocabulary, verbosity: int=0):
+    def __str__(self, vocabulary: Vocabulary=None, verbosity: int=0):
         level_string = f"Level: {self.level_id}\nNumber of Clusters: {self.num_clusters}\nClusters: "
         if verbosity == 0:
             level_string += f"{list(self.clusters.keys())[:NUMBER_ITEMS_TO_PRINT]}...\n"
         elif verbosity == 1:
             level_string += f"{list(self.clusters.keys())}\n"
         elif verbosity == 2:
+            if vocabulary is None:
+                print("Must pass vocabulary with verbosity of 2.")
+                return ""
             level_string += f"{list(self.clusters.keys())}\n"
             for cluster_id in self.clusters:
-                level_string += self.clusters[cluster_id].__str__(vocabulary=vocabulary, verbosity=1)
+                level_string += self.clusters[cluster_id].__str__(vocabulary=vocabulary, verbosity=verbosity)
         else:
             return "Verbosity level not recognized, please choose a supported verbosity level.\n"
         return level_string
@@ -186,7 +204,7 @@ class Distance_Matrix:
         return str(self.distances)
     
     def remove_cluster(self, cluster_to_remove: int) -> None:
-        """Efficiently removes specified cluster from DistanceMatrix.
+        """Removes specified cluster from DistanceMatrix.
 
         Args:
             cluster_to_remove (int): The id of the cluser to remove.
@@ -195,7 +213,7 @@ class Distance_Matrix:
         return
     
     def add_cluster(self, new_cluster_id: int, current_level: Level) -> None:
-        """Efficiently add new cluster to DistanceMatrix.
+        """Adds new cluster to DistanceMatrix.
 
         Args:
             new_cluster_id (int): The id of the new cluster.

@@ -29,13 +29,15 @@ class FHDC_Model():
         s += '...\n'
         return s
     
-    def preprocess(self, docs: Dict[int, str], min_frequency: int=2, return_processed: bool=False):
+    def preprocess(self, docs: Dict[int, str], doc_min_frequency: int=2, corpus_min_frequency: int=2, return_processed: bool=False):
         """Preprocess documents with input data format of a dictionary with keys of document ids and string values of document contents to an output data format where each document is represented by a dictionary with keys of the word ids in that document and values of the TF-IDF score for that word in that document.
 
         Args:
             docs (Dict[int, str]): Collection of documents to cluster in simple data format.
 
-            min_frequency (int, optional): Minimum frequency a word must have in a document in order to be retained in the output data format. Defaults to 2.
+            doc_min_frequency (int, optional): Minimum frequency a word must have in a document in order to be retained in the output data format. Defaults to 2.
+
+            corpus_min_frequency (int, optional): Minimum frequency a word must have corpus wide in order to be retained in the output data format. Defaults to 2.
 
             return_processed (bool, optional): Specify True if the Corpus adn Vocabulary are to be returned from this method call. Defaults to False.
 
@@ -44,7 +46,7 @@ class FHDC_Model():
             
             vocablary (Vocabulary): Collection of all the words in the corpus, their frequencies, and a mapping of each word to it's word id. This is only returned if return_processed is set to True.
         """
-        self.corpus, self.vocabulary = preprocess(docs=docs, min_frequency=min_frequency)
+        self.corpus, self.vocabulary = preprocess(docs=docs, doc_min_frequency=doc_min_frequency, corpus_min_frequency=corpus_min_frequency)
         if return_processed:
             return self.corpus, self.vocabulary
     
