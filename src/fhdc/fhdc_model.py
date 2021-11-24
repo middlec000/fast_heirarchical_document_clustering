@@ -29,7 +29,8 @@ class FHDC_Model():
         s += '...\n'
         return s
     
-    def preprocess(self, docs: Dict[int, str], doc_min_frequency: int=2, corpus_min_frequency: int=2, return_processed: bool=False):
+    #def preprocess(self, docs: Dict[int, str], doc_min_frequency: int=2, corpus_min_frequency: int=2, return_processed: bool=False):
+    def preprocess(self, docs: Dict[str, str], return_processed: bool=False, **kwargs):
         """Preprocess documents with input data format of a dictionary with keys of document ids and string values of document contents to an output data format where each document is represented by a dictionary with keys of the word ids in that document and values of the TF-IDF score for that word in that document.
 
         Args:
@@ -46,7 +47,8 @@ class FHDC_Model():
             
             vocablary (Vocabulary): Collection of all the words in the corpus, their frequencies, and a mapping of each word to it's word id. This is only returned if return_processed is set to True.
         """
-        self.corpus, self.vocabulary = preprocess(docs=docs, doc_min_frequency=doc_min_frequency, corpus_min_frequency=corpus_min_frequency)
+        # self.corpus, self.vocabulary = preprocess(docs=docs, doc_min_frequency=kwargs['doc_min_frequency'], corpus_min_frequency=kwargs['corpus_min_frequency'], tfidf_decimals=kwargs['tfidf_decimals'], stop_words=kwargs['stop_words'], lemmatizer=kwargs['lemmatizer'])
+        self.corpus, self.vocabulary = preprocess(docs=docs, kwargs=kwargs)
         if return_processed:
             return self.corpus, self.vocabulary
     

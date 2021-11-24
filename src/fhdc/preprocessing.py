@@ -4,11 +4,36 @@ from nltk.corpus import stopwords
 # showing info https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml
 import re
 import string
+from typing import List, Dict
 from data_classes import Vocabulary, Corpus, Cluster
 
-def preprocess(docs: dict, corpus_min_frequency: int=2, doc_min_frequency: int=2, tfidf_decimals: int=4):
-    stop_words = set(stopwords.words('english'))
-    lemmatizer = WordNetLemmatizer()
+def preprocess(docs: Dict[str,str], **kwargs):
+    """Takes as input a dictionary of the documents for clustering and transforms them into the compact data structures of Corpus and Vocabulary in preperation for clustering. This process turns each document from a string of words into a dictionary with keys of word ids and values TF-IDF scores associated with each word.
+
+    Args:
+        docs (Dict[str,str]): Documents to preprocess. Must be in format {doc_id (str): doc_text (str)}
+
+        **kwargs:
+            corpus_min_frequency (optional): Minimum corpus wide frequency each word needs to meet in order to be retained in clustering. Defaults to 2.
+
+            doc_min_frequency (optional): Minimum document frequency each word needs to meet in order to be retained in each document. Defaults to 2.
+            
+            tfidf_decimals (optional): Number of decimal places to round TF-IDF scores. Defaults to 4.
+            
+            stop_words (optional): Words to remove from corpus. If none is provided, the default list of nltk english stopwords is used by default.
+            
+            lemmatizer (optional): Lemmatizer to be used. Must have a .lematize(word) function. If none is provided, nltk's WordNetLemmatizer is used by default.
+
+    Returns:
+        corpus (Corpus), vocabulary (Vocabulary): The corpus and vocabulary. The corpus is used for clustering and the vocabulary is only needed for printing cluster themes.
+    """
+    # Establish default parameter values
+    params = {'corpus_min_frequency':2, 'doc_min_frequency':2, 'tfidf_decimals':4, 'stop_words': set(stopwords.words('english')), 'lemmatizer': WordNetLemmatizer()}
+    if kwargs is not None:
+        for k,v in kwargs.items():
+            params[k] = v
+    
+    # print(params)
 
     for doc in docs:
         # Lowercase
@@ -21,9 +46,9 @@ def preprocess(docs: dict, corpus_min_frequency: int=2, doc_min_frequency: int=2
         # Tokenize
         current_doc = current_doc.split(' ')
         # Remove Stopwords and Empty Strings
-        current_doc = [word for word in current_doc if word not in stop_words and word]
+        current_doc = [word for word in current_doc if word not in params['stop_words'] and word]
         # Lemmatize
-        current_doc = [lemmatizer.lemmatize(word) for word in current_doc]
+        current_doc = [params['lemmatizer'].lemmatize(word) for word in current_doc]
 
         # Transform to New Format {word: frequency}
         transformed_doc = {}
@@ -34,7 +59,7 @@ def preprocess(docs: dict, corpus_min_frequency: int=2, doc_min_frequency: int=2
                 transformed_doc[word] += 1
 
         # Remove low frequency words from doc
-        transformed_doc = {k:v for (k,v) in transformed_doc.items() if v >= doc_min_frequency}
+        transformed_doc = {k:v for (k,v) in transformed_doc.items() if v >= params['doc_min_frequency']}
 
         # Replace the original doc with transformed_doc
         docs[doc] = transformed_doc
@@ -56,7 +81,7 @@ def preprocess(docs: dict, corpus_min_frequency: int=2, doc_min_frequency: int=2
     # Find Corpus-Wide Low-Frequency Words
     infrequent_corpus_word_ids = []
     for word_id in vocabulary.id_count:
-        if vocabulary.id_count[word_id] < corpus_min_frequency:
+        if vocabulary.id_count[word_id] < params['corpus_min_frequency']:
             infrequent_corpus_word_ids.append(word_id)
 
     # Remove Corpus-Wide Low-Frequency Words From Vocabulary
@@ -78,7 +103,7 @@ def preprocess(docs: dict, corpus_min_frequency: int=2, doc_min_frequency: int=2
             if word in vocabulary.word_id:
                 word_id = vocabulary.word_id[word]
                 word_tfidf = float(docs[doc][word]) / float(vocabulary.id_count[word_id])
-                cluster_contents[word_id] = round(word_tfidf, ndigits=tfidf_decimals)
+                cluster_contents[word_id] = round(word_tfidf, ndigits=params['tfidf_decimals'])
         new_docs[cluster_id] = Cluster(cluster_id=cluster_id, docs=[doc], contents=cluster_contents)
         cluster_id += 1
 
