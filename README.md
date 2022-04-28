@@ -26,12 +26,12 @@ I took that class project and developed it into its current state.
 
 # Example Output
 Small Example  
-* [Text]('results/example_output/small_example.txt')
-* [Dendrogram]('results/example_output/small_example_dendrogram.png')  
+* [Text](results/example_output/small_example.txt)
+* [Dendrogram](results/example_output/small_example_dendrogram.png)  
  
 Data Science Cover Letters  
-* [Text]('results/example_output/cover_letter.txt')
-* [Dendrogram]('results/example_output/cover_letter_dendrogram.png')
+* [Text](results/example_output/cover_letter.txt)
+* [Dendrogram](results/example_output/cover_letter_dendrogram.png)
 
 # Preprocessing
 The original format for the corpus, or entire collection of documents, is a dictionary with keys of document names and values of the documents texts. The process of preprocessing the documents follows the steps in the diagram below.

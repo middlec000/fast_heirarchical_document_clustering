@@ -122,10 +122,8 @@ class Distance_Matrix:
             cluster_contents Dict[int, ClusterContents]): The cluster_contents over which to compute distances.
             distance (function): Distance function to be used.
         """
-        if distance is None:
-            self.distance = self.distance_default
-        else:
-            self.distance = distance
+        if not distance:
+            distance = self.dot_product_distance
         self.distances = {}
         cluster_contents_keys = list(cluster_contents.keys())
         for a in range(len(cluster_contents_keys)):
@@ -178,12 +176,13 @@ class Distance_Matrix:
                 merge_clusters = cluster_pair
         return merge_clusters, merge_dist
 
-    def distance_default(self, a: ClusterContents, b: ClusterContents) -> float:
-        """Computes and returns dot product distance based on TF-IDF scores between two clusters.
+    def dot_product_distance(self, a: ClusterContents, b: ClusterContents) -> float:
+        """
+        Computes and returns dot product distance based on TF-IDF scores between two clusters.
+        https://en.wikipedia.org/wiki/Dot_product
 
         Args:
             a (ClusterContents): The first cluster to compute distance from.
-
             b (ClusterContents): The second cluster to compute distance to.
 
         Returns:
