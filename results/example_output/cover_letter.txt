@@ -1,0 +1,66 @@
+Name Mapping:
+name_id={'example1.txt': 0, 'example2.txt': 1, 'example3.txt': 2, 'example4.txt': 3, 'example5.txt': 4}
+id_name={0: 'example1.txt', 1: 'example2.txt', 2: 'example3.txt', 3: 'example4.txt', 4: 'example5.txt'}
+
+Vocabulary:
+id_word={0: 'science', 1: 'data', 2: 'xyz', 3: 'company', 4: 'experience', 5: 'help', 6: 'work', 7: 'time', 8: 'grow', 9: 'well', 10: 'would', 11: 'make', 12: 'great', 13: 'scientist', 14: 'passionate', 15: 'analytics', 16: 'product', 17: 'skill', 18: 'like', 19: 'position', 20: 'river', 21: 'tech', 22: 'ability', 23: 'extensive', 24: 'education', 25: 'crane', 26: 'jenkins', 27: 'excellence', 28: 'applied', 29: 'statistic', 30: 'mathematics', 31: 'degree', 32: 'success', 33: 'look', 34: 'mr', 35: 'pqr', 36: 'organization', 37: 'three', 38: 'year', 39: 'project', 40: 'x', 41: 'valuable', 42: 'academic', 43: 'knowledge', 44: 'working', 45: 'understand', 46: 'job', 47: 'analysis', 48: 'professional', 49: 'management', 50: 'part', 51: 'important', 52: 'believe', 53: '\n\ni'}
+word_id={'science': 0, 'data': 1, 'xyz': 2, 'company': 3, 'experience': 4, 'help': 5, 'work': 6, 'time': 7, 'grow': 8, 'well': 9, 'would': 10, 'make': 11, 'great': 12, 'scientist': 13, 'passionate': 14, 'analytics': 15, 'product': 16, 'skill': 17, 'like': 18, 'position': 19, 'river': 20, 'tech': 21, 'ability': 22, 'extensive': 23, 'education': 24, 'crane': 25, 'jenkins': 26, 'excellence': 27, 'applied': 28, 'statistic': 29, 'mathematics': 30, 'degree': 31, 'success': 32, 'look': 33, 'mr': 34, 'pqr': 35, 'organization': 36, 'three': 37, 'year': 38, 'project': 39, 'x': 40, 'valuable': 41, 'academic': 42, 'knowledge': 43, 'working': 44, 'understand': 45, 'job': 46, 'analysis': 47, 'professional': 48, 'management': 49, 'part': 50, 'important': 51, 'believe': 52, '\n\ni': 53}
+id_freq={0: 6, 1: 34, 2: 7, 3: 7, 4: 13, 5: 2, 6: 4, 7: 2, 8: 2, 9: 2, 10: 5, 11: 2, 12: 2, 13: 12, 14: 2, 15: 2, 16: 2, 17: 6, 18: 4, 19: 5, 20: 3, 21: 4, 22: 3, 23: 3, 24: 6, 25: 2, 26: 4, 27: 2, 28: 3, 29: 4, 30: 4, 31: 2, 32: 2, 33: 2, 34: 2, 35: 2, 36: 2, 37: 2, 38: 2, 39: 4, 40: 2, 41: 2, 42: 2, 43: 2, 44: 2, 45: 2, 46: 4, 47: 2, 48: 2, 49: 2, 50: 2, 51: 2, 52: 2, 53: 2}
+
+Corpus:
+Cluster ID: 0
+Contents: {0: 0.3333, 1: 0.1765, 2: 0.4286, 3: 0.2857, 4: 0.1538, 5: 1.0, 6: 0.5, 7: 1.0}
+Cluster ID: 1
+Contents: {2: 0.5714, 3: 0.4286, 8: 1.0, 4: 0.2308, 1: 0.1765, 9: 1.0, 10: 0.6, 11: 1.0, 12: 1.0, 13: 0.1667, 14: 1.0, 15: 1.0, 0: 0.3333, 16: 1.0, 17: 0.3333}
+Cluster ID: 2
+Contents: {10: 0.4, 18: 1.0, 1: 0.3235, 13: 0.5, 19: 0.4, 20: 1.0, 21: 1.0, 22: 1.0, 23: 1.0, 24: 0.6667, 6: 0.5, 4: 0.1538, 25: 1.0, 26: 0.5, 17: 0.3333, 27: 1.0, 28: 1.0, 29: 0.5, 30: 0.5, 31: 1.0, 32: 1.0, 33: 1.0}
+Cluster ID: 3
+Contents: {34: 1.0, 1: 0.1176, 13: 0.1667, 35: 1.0, 36: 1.0, 37: 1.0, 38: 1.0, 4: 0.3077, 39: 1.0, 40: 1.0, 41: 1.0, 17: 0.3333, 29: 0.5, 30: 0.5, 0: 0.3333, 24: 0.3333, 26: 0.5, 42: 1.0, 43: 1.0, 3: 0.2857}
+Cluster ID: 4
+Contents: {19: 0.6, 1: 0.2059, 13: 0.1667, 44: 1.0, 45: 1.0, 46: 1.0, 47: 1.0, 4: 0.1538, 48: 1.0, 49: 1.0, 50: 1.0, 51: 1.0, 52: 1.0, 53: 1.0}
+
+Cluster Nodes:
+Cluster ID: 0
+Original Documents: [0]
+Parent Clusters: []
+Cluster ID: 1
+Original Documents: [1]
+Parent Clusters: []
+Cluster ID: 2
+Original Documents: [2]
+Parent Clusters: []
+Cluster ID: 3
+Original Documents: [3]
+Parent Clusters: []
+Cluster ID: 4
+Original Documents: [4]
+Parent Clusters: []
+Cluster ID: 5
+Original Documents: [0, 1]
+Parent Clusters: [0, 1]
+Cluster ID: 6
+Original Documents: [2, 3]
+Parent Clusters: [2, 3]
+Cluster ID: 7
+Original Documents: [0, 1, 2, 3]
+Parent Clusters: [5, 6]
+Cluster ID: 8
+Original Documents: [4, 0, 1, 2, 3]
+Parent Clusters: [4, 7]
+
+Linkage Matrix:
+[[0.         1.         0.88378161 2.        ]
+ [2.         3.         0.89769971 2.        ]
+ [5.         6.         0.91207634 4.        ]
+ [4.         7.         0.96797894 5.        ]]
+
+Cluster Themes at cluster step 2:
+Cluster ID: 6
+Theme Words: ['crane', 'excellence', 'degree', 'success', 'look', 'mr', 'pqr', 'organization', 'three', 'year']
+Cluster Documents: ['example3.txt', 'example4.txt']
+Cluster ID: 5
+Theme Words: ['help', 'time', 'grow', 'well', 'make', 'great', 'passionate', 'analytics', 'product', 'xyz']
+Cluster Documents: ['example1.txt', 'example2.txt']
+Cluster ID: 4
+Theme Words: ['working', 'understand', 'analysis', 'professional', 'management', 'part', 'important', 'believe', '\n\ni', 'job']
+Cluster Documents: ['example5.txt']

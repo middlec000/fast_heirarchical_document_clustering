@@ -1,0 +1,54 @@
+Name Mapping:
+name_id={'doc1': 0, 'doc1.4': 1, 'doc0': 2, 'doc2': 3}
+id_name={0: 'doc1', 1: 'doc1.4', 2: 'doc0', 3: 'doc2'}
+
+Vocabulary:
+id_word={0: 'one', 1: 'plaster', 2: 'three', 3: 'two'}
+word_id={'one': 0, 'plaster': 1, 'three': 2, 'two': 3}
+id_freq={0: 6, 1: 3, 2: 4, 3: 2}
+
+Corpus:
+Cluster ID: 0
+Contents: {0: 0.5}
+Cluster ID: 1
+Contents: {1: 1.0}
+Cluster ID: 2
+Contents: {0: 0.5, 2: 0.5}
+Cluster ID: 3
+Contents: {3: 1.0, 2: 0.5}
+
+Cluster Nodes:
+Cluster ID: 0
+Original Documents: [0]
+Parent Clusters: []
+Cluster ID: 1
+Original Documents: [1]
+Parent Clusters: []
+Cluster ID: 2
+Original Documents: [2]
+Parent Clusters: []
+Cluster ID: 3
+Original Documents: [3]
+Parent Clusters: []
+Cluster ID: 4
+Original Documents: [0, 2]
+Parent Clusters: [0, 2]
+Cluster ID: 5
+Original Documents: [3, 0, 2]
+Parent Clusters: [3, 4]
+Cluster ID: 6
+Original Documents: [1, 3, 0, 2]
+Parent Clusters: [1, 5]
+
+Linkage Matrix:
+[[0.         2.         0.29289322 2.        ]
+ [3.         4.         0.8        3.        ]
+ [1.         5.         1.         4.        ]]
+
+Cluster Themes at cluster step 2:
+Cluster ID: 5
+Theme Words: ['two', 'three', 'one']
+Cluster Documents: ['doc2', 'doc1', 'doc0']
+Cluster ID: 1
+Theme Words: ['plaster']
+Cluster Documents: ['doc1.4']
